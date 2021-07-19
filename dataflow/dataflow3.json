@@ -1,0 +1,32 @@
+{
+	"name": "dataflow3",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "EmpDataset1",
+						"type": "DatasetReference"
+					},
+					"name": "empsource"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "outputsink",
+						"type": "DatasetReference"
+					},
+					"name": "empcount"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Aggregate1"
+				}
+			],
+			"script": "source(output(\n\t\tempid as string,\n\t\tname as string,\n\t\tcountry as string,\n\t\tdepartment as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tpartitionBy('hash', 1)) ~> empsource\nempsource aggregate(groupBy(department),\n\tTotalemps = count(empid),\n\tpartitionBy('hash', 1)) ~> Aggregate1\nAggregate1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> empcount"
+		}
+	}
+}

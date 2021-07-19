@@ -1,0 +1,27 @@
+{
+	"name": "Soutput",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"folderoutput": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": {
+					"value": "@dataset().folderoutput",
+					"type": "Expression"
+				},
+				"container": "adfdemovijay"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

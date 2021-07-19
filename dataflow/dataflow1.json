@@ -1,0 +1,39 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "EmpDataset1",
+						"type": "DatasetReference"
+					},
+					"name": "EmpSorce"
+				},
+				{
+					"dataset": {
+						"referenceName": "DepSource1",
+						"type": "DatasetReference"
+					},
+					"name": "depSorce"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "outputsink",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Joinsink"
+				}
+			],
+			"script": "source(output(\n\t\tempid as string,\n\t\tname as string,\n\t\tcountry as string,\n\t\tdepartment as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tpartitionBy('hash', 1)) ~> EmpSorce\nsource(output(\n\t\tdepid as string,\n\t\tdepname as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tpartitionBy('hash', 1)) ~> depSorce\nEmpSorce, depSorce join(department == depid,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> Joinsink\nJoinsink sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+		}
+	}
+}

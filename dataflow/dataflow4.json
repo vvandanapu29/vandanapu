@@ -1,0 +1,60 @@
+{
+	"name": "dataflow4",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "EmpDataset1",
+						"type": "DatasetReference"
+					},
+					"name": "EmpSource"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "outputsink",
+						"type": "DatasetReference"
+					},
+					"name": "testingemps"
+				},
+				{
+					"dataset": {
+						"referenceName": "outputsink",
+						"type": "DatasetReference"
+					},
+					"name": "hremps"
+				},
+				{
+					"dataset": {
+						"referenceName": "outputsink",
+						"type": "DatasetReference"
+					},
+					"name": "marketingemps"
+				},
+				{
+					"dataset": {
+						"referenceName": "outputsink",
+						"type": "DatasetReference"
+					},
+					"name": "financeemps"
+				},
+				{
+					"dataset": {
+						"referenceName": "outputsink",
+						"type": "DatasetReference"
+					},
+					"name": "otheremps"
+				}
+			],
+			"transformations": [
+				{
+					"name": "ConditionalSplit1"
+				}
+			],
+			"script": "source(output(\n\t\tempid as string,\n\t\tname as string,\n\t\tcountry as string,\n\t\tdepartment as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> EmpSource\nEmpSource split(equals(department,'testing'),\n\tequals(department,'HR'),\n\tequals(department,'marketing'),\n\tequals(department,'finance'),\n\tdisjoint: false) ~> ConditionalSplit1@(testingemps, hremps, marketingemaps, financeemps, otheremps)\nConditionalSplit1@testingemps sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['testingemps'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> testingemps\nConditionalSplit1@hremps sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['hremps'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> hremps\nConditionalSplit1@marketingemaps sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['marketingemps'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> marketingemps\nConditionalSplit1@financeemps sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['financeemps'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> financeemps\nConditionalSplit1@otheremps sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['otheremps'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> otheremps"
+		}
+	}
+}

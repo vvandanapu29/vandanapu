@@ -1,0 +1,32 @@
+{
+	"name": "dataflow5",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText1",
+						"type": "DatasetReference"
+					},
+					"name": "Emp1Source"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "outputsink",
+						"type": "DatasetReference"
+					},
+					"name": "derviedoutput"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DerivedColumn1"
+				}
+			],
+			"script": "source(output(\n\t\tempid as string,\n\t\tname as string,\n\t\tcountry as string,\n\t\tdepartment as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> Emp1Source\nEmp1Source derive(country = upper(country),\n\t\tnewCountry = iif(isNull(country),'Unknown',upper(country))) ~> DerivedColumn1\nDerivedColumn1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['derviedoutput'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> derviedoutput"
+		}
+	}
+}

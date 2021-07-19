@@ -1,0 +1,20 @@
+{
+	"name": "powerquery1",
+	"properties": {
+		"type": "WranglingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"name": "DelimitedText1",
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> DelimitedText1",
+					"dataset": {
+						"referenceName": "DelimitedText1",
+						"type": "DatasetReference"
+					}
+				}
+			],
+			"sinks": [],
+			"script": "section Section1;\r\nshared DelimitedText1 = let\r\n  AdfDoc = AzureStorage.BlobContents(\"https://adfvijay123.blob.core.windows.net/adfdemovijay/Input/Emp1.csv\"),\r\n  Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]),\r\n  PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true])\r\nin\r\n  PromotedHeaders;\r\nshared UserQuery = let\r\n  Source = DelimitedText1,\r\n  #\"Removed columns\" = Table.RemoveColumns(Source, {\"department\"})\r\nin\r\n  #\"Removed columns\";\r\n"
+		}
+	}
+}

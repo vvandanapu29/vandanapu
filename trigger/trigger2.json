@@ -1,0 +1,31 @@
+{
+	"name": "trigger2",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pipeline3",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"outputfolders": [
+						1,
+						2,
+						3
+					]
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 15,
+				"startTime": "2021-07-08T06:39:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}
